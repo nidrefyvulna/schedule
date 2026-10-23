@@ -26,11 +26,11 @@ export const score=(s,c)=>{const r=rem(s,c);if(!r)return 0;const d=since(s,c);re
 export function build(c,av,a){
  const L=limits(c.sleep),cap=Math.min(a+av,L.end),eff=cap-a;if(eff<10)return[];
  const use=eff<25?eff:Math.floor(eff*.8/5)*5;let t=a,u=0;const o=[];
- const cand=SKILLS.filter(s=>rem(s,c)>0&&!c.skip.includes(s.id)).sort((x,y)=>(y.w?1:0)-(x.w?1:0)||score(y,c)-score(x,c));
+ const cand=(c.skills||SKILLS).filter(s=>rem(s,c)>0&&!c.skip.includes(s.id)).sort((x,y)=>(y.w?1:0)-(x.w?1:0)||score(y,c)-score(x,c));
  for(const s of cand){const left=use-u;let len=Math.floor(Math.min(s.len,rem(s,c),left)/5)*5;
   if(len<s.min){if(rem(s,c)>=s.min&&left>=s.min)len=s.min;else continue}
   const lim=s.w?L.wo:s.hot?L.hot:L.end;
   if(t+len>lim){len=Math.floor((lim-t)/5)*5;if(len<s.min)continue}
-  const br=o.length%2?15:len<=30?5:10,b=Math.min(br,Math.max(0,L.end-(t+len)));
+  const br=s.bm>0?s.bm:o.length%2?15:len<=30?5:10,b=Math.min(br,Math.max(0,L.end-(t+len)));
   o.push({id:s.id,a:t,len,br:b,ov:overdue(s,c)});t+=len+br;u+=len+br}
  return o}
